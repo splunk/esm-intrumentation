@@ -24,4 +24,4 @@ functions:
     events:
       - httpApi: "*"
     layers:
-      - arn:aws:lambda:ap-southeast-2:254067382080:layer:splunk-apm:102
+      - arn:aws:lambda:ap-southeast-2:254067382080:layer:splunk-apm:98
