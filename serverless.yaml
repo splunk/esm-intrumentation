@@ -1,0 +1,27 @@
+service: aws-node16x-esm-test-api
+frameworkVersion: "3"
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ap-southeast-2
+  tracing:
+    lambda: true
+  environment:
+    AWS_LAMBDA_EXEC_WRAPPER: /opt/nodejs-otel-handler
+    OTEL_RESOURCE_ATTRIBUTES: deployment.environment=dev,service.version=1.0
+    OTEL_SERVICE_NAME: aws-node16-api-esm
+    SPLUNK_ACCESS_TOKEN: ${env:SPLUNK_ACCESS_TOKEN}
+    SPLUNK_REALM: ${env:SPLUNK_REALM}
+    OPENTELEMETRY_EXTENSION_LOG_LEVEL: debug
+
+functions:
+  api:
+    handler: test-service.serviceFunc
+    events:
+      - httpApi: "*"
+    layers:
+      - arn:aws:lambda:ap-southeast-2:254067382080:layer:splunk-apm:102
