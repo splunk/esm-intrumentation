@@ -1,8 +1,5 @@
-service: aws-node16x-esm-test-api
+service: aws-node-express-api-esm-iitm
 frameworkVersion: "3"
-
-plugins:
-  - serverless-webpack
 
 provider:
   name: aws
@@ -13,15 +10,25 @@ provider:
   environment:
     AWS_LAMBDA_EXEC_WRAPPER: /opt/nodejs-otel-handler
     OTEL_RESOURCE_ATTRIBUTES: deployment.environment=dev,service.version=1.0
-    OTEL_SERVICE_NAME: aws-node16-api-esm
-    SPLUNK_ACCESS_TOKEN: ${env:SPLUNK_ACCESS_TOKEN}
-    SPLUNK_REALM: ${env:SPLUNK_REALM}
+    OTEL_SERVICE_NAME: aws-node-express-api-dev-api-esm-iitm
+    SPLUNK_ACCESS_TOKEN: n79JFIhE1X22WUM61yUn5Q
+    SPLUNK_REALM: us0
     OPENTELEMETRY_EXTENSION_LOG_LEVEL: debug
+    OTEL_LAMBDA_LOG_LEVEL: debug
 
+layers:
+  customotel:
+    path: custom-js-layer
+    name: ${sls:stage}-custom-js-layer
+    compatibleRuntimes:
+      - nodejs16.x
+    compatibleArchitectures:
+      - x86_64
 functions:
   api:
-    handler: test-service.serviceFunc
+    handler: services/main.handler
     events:
       - httpApi: "*"
     layers:
-      - arn:aws:lambda:ap-southeast-2:254067382080:layer:splunk-apm:98
+      - !Ref CustomotelLambdaLayer
+      - arn:aws:lambda:ap-southeast-2:254067382080:layer:splunk-apm-collector:6
